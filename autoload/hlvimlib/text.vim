@@ -25,3 +25,20 @@ function! hlvimlib#text#GetCharAtLineCol(line, char_col)
     let cur_char = strcharpart(line_content, a:char_col - 1, 1, 0)
     return cur_char
 endfunction
+
+" 确保列存在, 否则就用空格填充
+function! hlvimlib#text#EnsureColEnough(line_num, virt_col)
+    let end_col = virtcol([a:line_num, '$'])
+
+    if a:virt_col >= end_col
+        let line_content = getline(a:line_num) . repeat(' ', a:virt_col - end_col + 10)
+        call setline(a:line_num, line_content)
+    endif
+endfunction
+
+function! hlvimlib#text#EnsureLineEnough(line_num)
+    while line('$') < a:line_num
+        call append(line('$'), '')
+    endwhile
+endfunction
+
