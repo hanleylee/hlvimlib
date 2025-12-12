@@ -26,6 +26,17 @@ function! hlvimlib#text#GetCharAtLineCol(line, char_col)
     return cur_char
 endfunction
 
+function! hlvimlib#text#SetCharAtLineCol(line_num, target_virt_col, char)
+    call hlvimlib#text#EnsureLineEnough(a:line_num)
+    call hlvimlib#text#EnsureColEnough(a:line_num, a:target_virt_col)
+
+    let l:line_content = getline(a:line_num)
+    let l:target_col = virtcol2col(winnr(), a:line_num, a:target_virt_col)
+    let l:before = strpart(l:line_content, 0, l:target_col - 1)
+    let l:after = strpart(l:line_content, l:target_col)
+    call setline(a:line_num, l:before . a:char . l:after)
+endfunction
+
 " 确保列存在, 否则就用空格填充
 function! hlvimlib#text#EnsureColEnough(line_num, virt_col)
     let end_col = virtcol([a:line_num, '$'])
